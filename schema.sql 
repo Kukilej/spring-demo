@@ -1,0 +1,15 @@
+create table posts (id varchar(255) not null, created_date timestamp, message varchar(255), created_user varchar(255), primary key (id))
+create table users (username varchar(255) not null, fullname varchar(255), primary key (username))
+alter table posts add constraint FKb7d4395jdxgvf2djlg4u87e6p foreign key (created_user) references users
+create table posts (id varchar(255) not null, created_date timestamp, message varchar(255), created_user varchar(255), primary key (id))
+create table users (username varchar(255) not null, fullname varchar(255), primary key (username))
+alter table posts add constraint FKb7d4395jdxgvf2djlg4u87e6p foreign key (created_user) references users
+create table posts (id varchar(255) not null, created_date timestamp, message varchar(255), created_user varchar(255), primary key (id))
+create table users (username varchar(255) not null, fullname varchar(255), primary key (username))
+alter table posts add constraint FKb7d4395jdxgvf2djlg4u87e6p foreign key (created_user) references users
+create table posts (id varchar(255) not null, created_date timestamp, message varchar(255), created_user varchar(255), primary key (id))
+create table users (username varchar(255) not null, fullname varchar(255), primary key (username))
+alter table posts add constraint FKb7d4395jdxgvf2djlg4u87e6p foreign key (created_user) references users
+create table posts (id varchar(255) not null, created_date timestamp, message varchar(255), created_user varchar(255), primary key (id))
+create table users (username varchar(255) not null, fullname varchar(255), primary key (username))
+alter table posts add constraint FKb7d4395jdxgvf2djlg4u87e6p foreign key (created_user) references users
