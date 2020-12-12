@@ -7,6 +7,17 @@ To run Docker container: docker run --name my-postgres-container -e POSTGRES_PAS
 
 Make sure that parameters from above commands align with application.properties file.
 
+Check that Flyway created tables and populated them in postgres public schema with .sql scripts from main/resources/db.migration by by entering container : 
+
+  docker exec -it my-postgres-container bash
+  
+  psql -U postgres
+  
+  \dt
+  
+  select * from student; (or other table)
+
+
 
 I added timeouts of 1sec to GET/{id} endpoints so difference to a call which goes to a database compared to cached content is visible to a human eye.
 
