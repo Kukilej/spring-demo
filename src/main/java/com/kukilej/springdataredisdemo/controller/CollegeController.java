@@ -1,15 +1,18 @@
 package com.kukilej.springdataredisdemo.controller;
 
-import com.kukilej.springdataredisdemo.model.College;
+import com.kukilej.springdataredisdemo.domain.dto.CollegeDto;
 import com.kukilej.springdataredisdemo.service.CollegeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -17,7 +20,7 @@ import java.util.List;
 @RequestMapping("/college")
 public class CollegeController {
 
-    private CollegeService collegeService;
+    private final CollegeService collegeService;
 
     public CollegeController(CollegeService collegeService) {
         this.collegeService = collegeService;
@@ -26,35 +29,40 @@ public class CollegeController {
     private static final Logger log = LoggerFactory.getLogger(CollegeController.class);
 
     @GetMapping("/{id}")
-    @Cacheable(value = "colleges", key = "#id")
-    public College getCollegeByID(@PathVariable final String id)  {
+    public ResponseEntity<CollegeDto> get(@PathVariable final String id)  {
         log.info("Get college with id {}", id);
-        return collegeService.findById(id);
+        CollegeDto college = collegeService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(college);
     }
 
-    @PostMapping("/create")
-    public College addCollege(@RequestBody final College college) {
-        log.info("Create post with id {}", college.getCollegeName());
-        return collegeService.createCollege(college);
+    @PostMapping
+    public ResponseEntity<CollegeDto> add(@RequestBody final CollegeDto collegeDto) {
+        log.info("Create post with id {}", collegeDto.getCollegeName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(collegeService.save(collegeDto));
     }
 
-    @PutMapping("/update")
-    @CachePut(value = "colleges", key = "#college.getCollegeName()")
-    public College updateCollege(@RequestBody final College college)  {
-        log.info("Update college with name {}", college.getCollegeName());
-        return collegeService.updateCollege(college);
+    @PutMapping
+    public ResponseEntity<CollegeDto> update(@RequestBody final CollegeDto collegeDto)  {
+        log.info("Update college with name {}", collegeDto.getCollegeName());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(collegeService.update(collegeDto));
+
     }
 
-    @DeleteMapping("/delete/{id}")
-    @CacheEvict(value = "colleges", key = "#id")
-    public College deleteCollege(@PathVariable final String id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CollegeDto> delete(@PathVariable final String id) {
         log.info("Delete college with id {}", id);
-        return collegeService.deleteCollege(id);
+        collegeService.deleteCollege(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
-    @GetMapping("/all")
-    public List<College> getAllColleges() {
-        return collegeService.findAll();
+    @GetMapping
+    public ResponseEntity<Collection<CollegeDto>> getAll() {
+        List<CollegeDto> colleges = new ArrayList<>(collegeService.findAll());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(colleges);
     }
 
     @GetMapping("/clearCache")

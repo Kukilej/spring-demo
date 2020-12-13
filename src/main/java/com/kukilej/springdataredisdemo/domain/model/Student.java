@@ -1,11 +1,8 @@
-package com.kukilej.springdataredisdemo.model;
+package com.kukilej.springdataredisdemo.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.validation.annotation.Validated;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 
 import javax.persistence.*;
@@ -15,6 +12,8 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
+
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Builder
@@ -45,7 +44,8 @@ public class Student implements Serializable {
     @Max(3000)
     private Long highSchoolSize;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student", cascade = CascadeType.REMOVE)
-    @JsonIgnore
+    @OneToMany(fetch = LAZY, mappedBy = "student", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Apply> applyList;
 }

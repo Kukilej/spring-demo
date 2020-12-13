@@ -1,23 +1,26 @@
 package com.kukilej.springdataredisdemo.controller;
 
-import com.kukilej.springdataredisdemo.exception.StudentNotFoundException;
-import com.kukilej.springdataredisdemo.model.Student;
+import com.kukilej.springdataredisdemo.domain.dto.StudentDto;
 import com.kukilej.springdataredisdemo.service.StudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
 @RequestMapping("/student")
 public class StudentController {
 
-    private StudentService studentService;
+    private final StudentService studentService;
 
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
@@ -26,35 +29,39 @@ public class StudentController {
     private static final Logger log = LoggerFactory.getLogger(CollegeController.class);
 
     @GetMapping("/{id}")
-    @Cacheable(value = "students", key = "#id")
-    public Student getStudentByID(@PathVariable final Long id)  {
+    public ResponseEntity<StudentDto> get(@PathVariable final Long id)  {
         log.info("Get student with id {}", id);
-        return studentService.findById(id);
+        StudentDto studentDto =  studentService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(studentDto);
     }
 
-    @PostMapping("/create")
-    public Student createStudent(@RequestBody final Student student) {
-        log.info("Create student with id {}", student.getId());
-        return studentService.createStudent(student);
+    @PostMapping
+    public ResponseEntity<StudentDto> add(@Valid @RequestBody  StudentDto studentDto) {
+        log.info("Create student with id {}", studentDto.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.save(studentDto));
     }
 
-    @PutMapping("/update")
-    @CachePut(value = "students", key = "#student.getId()")
-    public Student updateStudentByID(@RequestBody final Student student) {
-        log.info("Update student with id {}", student.getId());
-        return studentService.updateStudent(student);
+    @PutMapping
+    public ResponseEntity<StudentDto> update(@RequestBody final StudentDto studentDto) {
+        log.info("Update student with id {}", studentDto.getId());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(studentService.updateStudent(studentDto));
     }
 
-    @DeleteMapping("/delete/{id}")
-    @CacheEvict(value = "students", key = "#id")
-    public Student deleteStudentByID(@PathVariable final Long id)  {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<StudentDto> delete(@PathVariable final Long id)  {
         log.info("Delete student with id {}", id);
-        return studentService.deleteStudent(id);
+        studentService.deleteStudent(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
-    @GetMapping("/all")
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
+    @GetMapping
+    public ResponseEntity<Collection<StudentDto>> getAll() {
+        List<StudentDto> students = new ArrayList<>(studentService.getAllStudents());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(students);
     }
 
     @GetMapping("/clearCache")
