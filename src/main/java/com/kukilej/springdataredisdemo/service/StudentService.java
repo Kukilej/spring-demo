@@ -33,10 +33,9 @@ public class StudentService {
     }
 
     @CacheEvict(value = "students", key = "#id")
-    public StudentDto deleteStudent(final Long id) {
+    public void deleteStudent(final Long id) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(id));
         studentRepository.delete(student);
-        return studentMapper.toDto(student);
     }
 
     @CachePut(value = "students", key = "#studentDto.getId()")

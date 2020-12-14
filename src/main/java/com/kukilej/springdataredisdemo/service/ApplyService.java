@@ -64,10 +64,9 @@ public class ApplyService {
     }
 
     @CacheEvict(value = "applications", key = "#id")
-    public Apply deleteApplication(final Long id) {
+    public void deleteApplication(final Long id) {
         Apply apply = applyRepository.findById(id).orElseThrow(() -> new ApplicationNotFoundException(id));
         applyRepository.delete(apply);
-        return apply;
     }
 
     @Transactional(readOnly = true)

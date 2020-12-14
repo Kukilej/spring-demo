@@ -1,4 +1,4 @@
-package com.kukilej.springdataredisdemo.controller;
+package com.kukilej.springdataredisdemo.controller.errorhandler;
 
 import com.kukilej.springdataredisdemo.controller.dto.ResponseMessageDTO;
 import com.kukilej.springdataredisdemo.exception.ApplicationNotFoundException;

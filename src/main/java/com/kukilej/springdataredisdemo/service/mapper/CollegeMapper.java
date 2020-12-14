@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", uses = ApplyMapper.class)
 public interface CollegeMapper {
+
     CollegeDto toDto(College college);
 
     College fromDto(CollegeDto dto);

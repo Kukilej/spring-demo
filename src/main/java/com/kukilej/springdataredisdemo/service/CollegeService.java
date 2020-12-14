@@ -40,10 +40,9 @@ public class CollegeService {
     }
 
     @CacheEvict(value = "colleges", key = "#id")
-    public CollegeDto deleteCollege(final String id) {
+    public void deleteCollege(final String id) {
         College college = collegeRepository.findById(id).orElseThrow(() -> new CollegeNotFoundException(id));
         collegeRepository.delete(college);
-        return collegeMapper.toDto(college);
     }
 
     @Transactional(readOnly = true)
@@ -57,6 +56,7 @@ public class CollegeService {
         College college = collegeRepository.findById(id).orElseThrow(() -> new CollegeNotFoundException(id));
         return collegeMapper.toDto(college);
     }
+
     @Transactional(readOnly = true)
     public List<CollegeDto> findAll() {
         try {
